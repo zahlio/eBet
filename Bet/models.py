@@ -50,7 +50,7 @@ class GameBet(models.Model):
             for w in winners2:
                 winnersTotal = winnersTotal + w.amount
 
-            our_cut = 0.00
+            total_payed = 0.00
 
             for winner in winners:
                 # we get the % of the winnings, this will be the % that the user wins from the total pool
@@ -61,18 +61,18 @@ class GameBet(models.Model):
 
                 #winnings cannot be below the amount played, if its below then we dont take our cut
                 if winnings < winner.amount:
-                    winnings = (((total / 100) * cutOfWinnersTotal) / 100) * 100
-
                     # we create a transaction for the user
-                    winner.user.create_transaction(winnings, "Winnings from Bet: <a href='/bet/" + str(self.id) + "/'>#" + str(self.id) + "</a> - " + self.winner.name)
-                    # no cut here
+                    winner.user.create_transaction(winner.amount, "Winnings from Bet: <a href='/bet/" + str(self.id) + "/'>#" + str(self.id) + "</a> - " + self.winner.name)
+                    total_payed += winner.amount
                 else:
                     # we create a transaction for the user
                     winner.user.create_transaction(winnings, "Winnings from Bet: <a href='/bet/" + str(self.id) + "/'>#" + str(self.id) + "</a> - " + self.winner.name)
-                    our_cut += (((total / 100) * cutOfWinnersTotal) / 100) * 10
+                    total_payed += winnings
 
             self.payed = True
             self.save()
+
+            our_cut = self.get_pool() - total_payed
 
             # log
             l = BetSettleLog(
