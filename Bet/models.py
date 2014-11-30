@@ -17,7 +17,7 @@ class GameBet(models.Model):
     game = models.ForeignKey('Accounting.Game')
     desc = models.TextField(help_text="Please enter this in HTML")
     payed = models.BooleanField(default=False)
-    image = models.FileField(upload_to='static/uploads/', help_text="Should be 800x300")
+    image = models.FileField(help_text="Should be 800x300")
 
     def __str__(self):
         return "[" + self.game.name + "] " + self.team1.name + " vs " + self.team2.name

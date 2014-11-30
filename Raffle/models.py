@@ -2,10 +2,11 @@ from datetime import datetime
 from django.db import models
 from django.template.defaultfilters import register
 
+
 class Price(models.Model):
     realPrice = models.FloatField()
     name = models.CharField(max_length=255)
-    image = models.FileField(upload_to='static/uploads/', help_text='Should be 800x300')
+    image = models.FileField(help_text='Should be 800x300')
     desc = models.TextField(help_text="Please enter this in HTML")
 
     def get_small_desc(self):
