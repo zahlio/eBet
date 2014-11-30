@@ -41,7 +41,7 @@ class GameBet(models.Model):
             winners2 = GameBetEntry.objects.filter(bet=self, team=self.winner)
 
             # we get the total amount in the pool
-            total = 0
+            total = 0.00
             for a in all:
                 total = total + a.amount
 
@@ -59,7 +59,7 @@ class GameBet(models.Model):
                 # we now get the amount from the total that the user will win, and removes 10% that is our fee.
                 winnings = (((total / 100) * cutOfWinnersTotal) / 100) * 90
 
-                #winnings cannot be below the amount played, if its below then we dont take our cut
+                #winnings cannot be below the amount played, if its below then we dont take our cut, and simply payout the amount the the user gambled for.
                 if winnings < winner.amount:
                     # we create a transaction for the user
                     winner.user.create_transaction(winner.amount, "Winnings from Bet: <a href='/bet/" + str(self.id) + "/'>#" + str(self.id) + "</a> - " + self.winner.name)
