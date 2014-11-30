@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% load static %}
+
+{% block title %}eBet - {{ bet.team1.name }} vs {{ bet.team2.name }}{% endblock %}
+
+
+{% block content %}
+    <h3>Status</h3>
+    <div class="alert alert-info" role="alert">{{ msg }}</div>
+    <a href="/bet/{{ bet.id }}" class="btn btn-default">Back to bet page</a>
+{% endblock %}

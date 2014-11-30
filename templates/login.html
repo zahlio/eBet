@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% load static %}
+
+{% block title %}eBet - Login{% endblock %}
+
+
+{% block content %}
+    <div class="page-header" style="margin-top: 0">
+        <h1>Login <small>At this page you can login</small></h1>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Login" class="btn btn-default">
+        <a href="/register/" class="btn btn-danger">Don't have an account?</a>
+    </form>
+{% endblock %}

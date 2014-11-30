@@ -1,0 +1,73 @@
+{% extends "base.html" %}{% load static %}
+
+{% block title %}eBet - {{ raffle.price.name }}{% endblock %}
+
+{% block content %}
+    <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li><a href="/raffles/">Raffles</a></li>
+        <li><a href="/raffle/{{ raffle.id }}/">{{ raffle.price.name }}</a></li>
+        <li><a href="/raffle/{{ raffle.id }}/enter/" class="active">Enter</a></li>
+    </ol>
+    <h3>You are about to enter a raffle</h3>
+    <table class="table">
+        <tr>
+            <td style="font-weight: bold;">Name</td>
+            <td><a href="/raffle/{{ raffle.id }}">{{ raffle.price.name }}</a></td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">Entry fee</td>
+            <td>${{ raffle.enterPrice }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">Slots left</td>
+            <td>{{ raffle.slots_left }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">Maximum entries</td>
+            <td>{{ raffle.maxEnterTimes }}</td>
+        </tr>
+    </table>
+
+    {% if user.get_balance < raffle.enterPrice %}
+        <div class="alert alert-danger" role="alert">Your balance (${{ user.get_balance }}) is too low to enter this raffle.</div>
+    {% elif raffle|get_user_entries:user >= raffle.maxEnterTimes %}
+        <div class="alert alert-danger" role="alert">You have reached the limit of entries for this raffle.</div>
+    {% elif None != raffle.winner or None != raffle.endDate %}
+        <div class="alert alert-danger" role="alert">This raffle has ended.</div>
+    {% elif raffle.slots <= raffle.get_slots_used %}
+        <div class="alert alert-danger" role="alert">There are no slots left.</div>
+    {% else %}
+        {% if raffle|get_user_entries:user > 0 %}
+            <div class="alert alert-warning" role="alert">You have previously entered this raffle a total of {{ raffle|get_user_entries:user }} times.</div>
+        {% endif %}
+        <form method="POST" action="submit/">
+            {% csrf_token %}
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" >
+                Enter raffle (${{ raffle.enterPrice }})
+            </button>
+
+            <a href="/raffle/{{ raffle.id }}" class="btn btn-danger">Back to raffle page</a>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title" id="myModalLabel">A friendly reminder</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>WARNING: You are about to enter a raffle, once you have done this there is no way of getting your items back. However you do have the chance of winning!</p>
+                            <p>Good luck!</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <input type="submit" value="Yes please enter raffle and withdraw ${{ raffle.enterPrice }} from my wallet" class="btn btn-success">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}

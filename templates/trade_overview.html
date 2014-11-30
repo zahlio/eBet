@@ -1,0 +1,72 @@
+{% extends "base.html" %}{% load static %}
+
+{% block title %}eBet- Steam Trade Overview{% endblock %}
+
+
+{% block content %}
+    <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li><a href="/trade">Trade</a></li>
+        <li><a href="/trade/overview/" class="active">Overview</a></li>
+    </ol>
+
+    <h3>Items</h3>
+    <table class="table">
+        {% for item in tradeItems %}
+            <tr>
+                <td><p>{{ item.item.market_hash_name }}</p></td>
+                <td><p>${{ item.price }}</p></td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Details</h3>
+    <table class="table">
+        <tr>
+            <td style="font-weight: bold;">Items</td>
+            <td>{{ trade.items_count }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">Total value in items</td>
+            <td>${{ trade.get_amount }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">Transaction fee (10%)</td>
+            <td>${{ trade.fee }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">Total amount added to balance</td>
+            <td>${{ trade.payable_amount }}</td>
+        </tr>
+    </table>
+    {% if trade.isComplete %}
+        <div class="alert alert-warning" role="alert">This trade has been completed.</div>
+    {% else %}
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" >
+            Start trade
+        </button>
+
+        <a href="/trade/" type="button" class="btn btn-default" data-dismiss="modal">New Trade</a>
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">A friendly reminder</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>WARNING: You are about to start a trade, once you have traded your items we will not guarentee that you can get them back!</p>
+                        <p>Good luck!</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <a href="offer/" type="submit"class="btn btn-success">Start Trade</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}

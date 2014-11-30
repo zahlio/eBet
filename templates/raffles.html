@@ -1,0 +1,25 @@
+{% extends "base.html" %}{% load static %}
+
+{% block title %}eBet - Raffles{% endblock %}
+
+{% block content %}
+
+    {% for raffle in frontPageItems %}
+        <div class="col-sm-4 col-lg-4 col-md-4">
+            <div class="thumbnail">
+                <a href="/raffle/{{ raffle.id }}/"><img src="{% get_media_prefix %}{{ raffle.price.image }}" alt=""></a>
+                <div class="caption">
+                    <h4><a href="/raffle/{{ raffle.id }}/">{{ raffle.price.name }}</a></h4>
+                    <span class="badge">{{ raffle.game.name }}</span> <span class="badge">Entry fee: ${{ raffle.enterPrice }}</span>
+                    <p>{{ raffle.price.get_small_desc|safe|striptags }}</p>
+                    <p style="text-align: center"><a href="/raffle/{{ raffle.id }}/" class="btn btn-default btn-sm">Goto raffle</a></p>
+                </div>
+                <hr>
+                <div class="ratings">
+                    <p class="pull-right" style="color: #000000">{{ raffle.get_slots_used }} of {{ raffle.slots }}</p>
+                    <p style="color: #000000">Total value: ${{ raffle.price.realPrice }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}{% load static %}
+
+{% block title %}eBet - {{ bet.team1.name }} vs {{ bet.team2.name }}{% endblock %}
+
+
+{% block content %}
+    <div class="thumbnail">
+        <img class="img-responsive" style="max-height: 300px" src="{% get_media_prefix %}{{ bet.image }}" alt="">
+        <div class="caption-full">
+            <h4 class="pull-right">Total pool: ${{ bet.get_pool }}</h4>
+            <h4><a href="#">{{ bet.team1.name }} vs {{ bet.team2.name }}</a></h4>
+            <h4>{{ bet.game.name }}</h4>
+            {{ bet.desc|safe }}
+            <hr>
+            <h4>Prediction table</h4>
+            <p>Please take in mind that the winnings can (and will) change.</p>
+            <table class="table">
+                <tr>
+                    <td style="font-weight: bold;">{{ bet.team1.name }}</td>
+                    <td style="font-weight: bold;">{{ bet.team2.name }}</td>
+                </tr>
+                <tr>
+                    <td>{{ bet|get_potential_1:bet.team1 }}x</td>
+                    <td>{{ bet|get_potential_1:bet.team2 }}x</td>
+                </tr>
+            </table>
+            <i>Note: 5x in the winnings table means that you can get 5 times your money back, an example would be: that a bet of $10 becomes $50 in winnings, if you win. However this will change during the bet, so it is in no way a guarentee.</i>
+        </div>
+    </div>
+
+    <div class="well">
+        {% if bet.has_ended %}
+            <div class="alert alert-success" role="alert">
+                Bet ended on {{ bet.bet_end }} winner is {{ bet.winner.name }}
+            </div>
+        {% else %}
+            <div class="alert alert-info" role="alert">Bet ends at: {{ bet.bet_end }} game starts at: {{ bet.game_start }}</div>
+            <div class="text-right">
+                <a href="enter/" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="This button will take you to the order page.">Enter bet</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

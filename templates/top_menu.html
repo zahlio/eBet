@@ -1,0 +1,32 @@
+<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a href="/bets/">Bets</a>
+        </li>
+
+        <li>
+            <a href="/raffles/">Raffles</a>
+        </li>
+        {% ifnotequal user 0 %}
+            <li>
+                <a href="/account/">Account</a>
+            </li>
+            <li>
+                <a href="/trade/">Trade</a>
+            </li>
+            <li>
+                <a href="/wallet/">Wallet <span class="badge">${{ user.get_balance }}</span></a>
+            </li>
+            <li>
+                <a href="/logout/">Logout</a>
+            </li>
+        {% else %}
+            <li>
+                <a href="/login/">Login</a>
+            </li>
+            <li>
+                <a href="/register/">Create Account</a>
+            </li>
+        {% endifnotequal %}
+    </ul>
+</div>

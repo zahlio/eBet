@@ -1,0 +1,105 @@
+{% extends "base.html" %}{% load static %}
+
+{% block title %}eBet - Account{% endblock %}
+
+
+{% block content %}
+    <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li><a href="/account/" class="active">Account</a></li>
+    </ol>
+
+
+    <div role="tabpanel">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
+            <li role="presentation"><a href="#winnings" aria-controls="winnings" role="tab" data-toggle="tab">Raffle Wins</a></li>
+            <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home">
+                <br>
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">Your Raffles</div>
+
+
+                    <div class="panel-body">
+                        <p>Below you can find an overview of all the raffles in which you have participated in.</p>
+                        <table class="table">
+                            <tr>
+                                <td style="font-weight: bold;">Total amount spend on raffles</td>
+                                <td>${{ user.total_used_on_raffles }}</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">Raffles participated in</td>
+                                <td>{{ user.total_raffels }}</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">Raffles won</td>
+                                <td>{{ user.get_raffles_won }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <table class="table">
+                        <tr>
+                            <td style="font-weight: bold;">#</td>
+                            <td style="font-weight: bold;">Raffle</td>
+                            <td style="font-weight: bold;">Date</td>
+                            <td style="font-weight: bold;">Amount Spend</td>
+                        </tr>
+                        {% for userRaffle in user.get_raffels %}
+                            <tr>
+                                <td>{{ userRaffle.id }}</td>
+                                <td><a href="/raffle/{{ userRaffle.raffle.id }}/">{{ userRaffle.raffle.price.name }}</a></td>
+                                <td>{{ userRaffle.date }}</td>
+                                <td>${{ userRaffle.raffle.enterPrice }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+
+            <div role="tabpanel" class="tab-pane fade" id="winnings">
+                <br>
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">Your Raffle Wins</div>
+
+
+                    <div class="panel-body">
+                        <p>Below you can find an overview of all the raffles in which you have won.</p>
+                    </div>
+                    <table class="table">
+                        <tr>
+                            <td style="font-weight: bold;">#</td>
+                            <td style="font-weight: bold;">Raffle</td>
+                            <td style="font-weight: bold;">Date</td>
+                            <td style="font-weight: bold;">Amount Spend</td>
+                            <td style="font-weight: bold;"></td>
+                        </tr>
+                        {% for raffle in user.get_raffles_wonList %}
+                            <tr>
+                                <td>{{ raffle.id }}</td>
+                                <td><a href="/raffle/{{ raffle.id }}/">{{ raffle.price.name }}</a></td>
+                                <td>{{ raffle.endDate }}</td>
+                                <td>${{ raffle.enterPrice }}</td>
+                                <td><a href="/raffle/{{ raffle.id }}/claim/" type="button" class="btn btn-default">Claim price</a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+
+            <div role="tabpanel" class="tab-pane fade" id="settings">
+                <p>data 4</p>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}

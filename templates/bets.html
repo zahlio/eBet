@@ -1,0 +1,25 @@
+{% extends "base.html" %}{% load static %}
+
+{% block title %}eBet - Bets{% endblock %}
+
+{% block content %}
+
+    {% for bet in frontPageItems %}
+        <div class="col-sm-4 col-lg-4 col-md-4">
+            <div class="thumbnail">
+                <a href="/bet/{{ bet.id }}/"><img src="{% get_media_prefix %}{{ bet.image }}" alt=""></a>
+                <div class="caption">
+                    <h4><a href="/bet/{{ bet.id }}/">{{ bet.team1.name }} vs {{ bet.team2.name }}</a></h4>
+                    <span class="badge">{{ bet.team1.game.name }}</span> <span class="badge">Min: ${{ bet.min_amount }}</span>
+                    <p>{{ bet.get_small_desc|safe|striptags }}</p>
+                    <p style="text-align: center"><a href="/bet/{{ bet.id }}/" class="btn btn-default btn-sm">Goto bet</a></p>
+                </div>
+                <hr>
+                <div class="ratings">
+                    <p class="pull-right" style="color: #000000">{{ bet.team2.name }}: {{ bet|get_potential_1:bet.team2 }}x</p>
+                    <p style="color: #000000">{{ bet.team1.name }}: {{ bet|get_potential_1:bet.team1 }}x</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

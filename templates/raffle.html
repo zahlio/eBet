@@ -1,0 +1,73 @@
+{% extends "base.html" %}{% load static %}
+
+{% block title %}eBet - {{ raffle.price.name }}{% endblock %}
+
+
+{% block content %}
+    <div class="thumbnail">
+        <img class="img-responsive" style="max-height: 300px" src="{% get_media_prefix %}{{ raffle.price.image }}" alt="">
+        <div class="caption-full">
+            <h4 class="pull-right">Entry fee: ${{ raffle.enterPrice }}</h4>
+            <h4><a href="#">{{ raffle.price.name }}</a></h4>
+            <h4>{{ raffle.game.name }}</h4>
+            {{ raffle.price.desc|safe }}
+        </div>
+        <hr>
+        <div class="ratings">
+            <p class="pull-right" style="color: #000000">{{ raffle.get_slots_used }} of {{ raffle.slots }} slots filled</p>
+            <p style="color: #000000">Total value of item: <span class="badge">${{ raffle.price.realPrice }}</span></p>
+        </div>
+        <hr>
+        <div class="progress" style="margin-left: 10px; margin-right: 10px">
+            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {{ raffle.get_slots_used|procent:raffle.slots }}%;">
+            </div>
+        </div>
+    </div>
+
+    <div class="well">
+        {% if None != raffle.winner or None != raffle.endDate %}
+            <div class="alert alert-success" role="alert">
+                Raffle ended on {{ raffle.endDate }}
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
+                    Did i win?
+                </button>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Did i win?</h4>
+                        </div>
+                        <div class="modal-body">
+                            {% if raffle.winner == user %}
+                                <p>Yes you did!</p>
+                                <a href="claim/" type="button" class="btn btn-success">Claim your price!</a>
+                            {% else %}
+                                <p>Sadly you did not, better luck next time!</p>
+                            {% endif %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="text-right">
+                <a href="enter/" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="This button will take you to the order page.">Enter Raffle</a>
+            </div>
+        {% endif %}
+
+        {% for userRaffle in raffle.get_users_in %}
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+                    {{ userRaffle.user.get_email_ob }} <span class="pull-right">{{ userRaffle.time_since_html }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

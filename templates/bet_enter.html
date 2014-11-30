@@ -1,0 +1,89 @@
+{% extends "base.html" %}{% load static %}
+
+{% block title %}eBet - {{ bet.team1.name }} vs {{ bet.team2.name }}{% endblock %}
+
+{% block content %}
+    <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li><a href="/bets/">bets</a></li>
+        <li><a href="/bet/{{ bet.id }}/">{{ bet.team1.name }} vs {{ bet.team2.name }}</a></li>
+        <li><a href="/bet/{{ bet.id }}/enter/" class="active">Enter</a></li>
+    </ol>
+    <h3>You are about to enter a bet</h3>
+    <table class="table">
+        <tr>
+            <td style="font-weight: bold;">Name</td>
+            <td><a href="/bet/{{ bet.id }}">{{ bet.team1.name }} vs {{ bet.team2.name }}</a></td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">Minimum amount</td>
+            <td>${{ bet.min_amount }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">Maximum amount</td>
+            <td>${{ bet.max_amount }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">Maximum entries</td>
+            <td>{{ bet.maxEnterTimes }}</td>
+        </tr>
+    </table>
+
+    {% if user.get_balance < bet.min_amount %}
+        <div class="alert alert-danger" role="alert">Your balance (${{ user.get_balance }}) is too low to enter this bet.</div>
+    {% elif bet|get_user_entries_bet:user >= bet.maxEnterTimes %}
+        <div class="alert alert-danger" role="alert">You have reached the limit of entries for this bet.</div>
+    {% elif bet.has_ended %}
+        <div class="alert alert-danger" role="alert">This bet has ended.</div>
+    {% else %}
+        {% if bet|get_user_entries_bet:user > 0 %}
+            <div class="alert alert-warning" role="alert">You have previously entered this bet a total of {{ bet|get_user_entries:user }} times.</div>
+        {% endif %}
+        <form method="POST" action="submit/">
+            {% csrf_token %}
+
+            <h4>Amount</h4>
+            <div class="input-group" style="max-width: 250px">
+                <span class="input-group-addon">$</span>
+                <input type="number" class="form-control" required="" name="amount">
+                <span class="input-group-addon">.00</span>
+            </div>
+
+            <br>
+
+            <h4>Team</h4>
+            <div class="input-group">
+                <select class="form-control" style="min-width: 250px" name="team">
+                    <option value="team1">{{ bet.team1.name }}</option>
+                    <option value="team2">{{ bet.team2.name }}</option>
+                </select>
+            </div>
+
+            <br>
+
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Enter bet</button>
+
+            <a href="/bet/{{ bet.id }}" class="btn btn-danger">Back to bet page</a>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title" id="myModalLabel">A friendly reminder</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>WARNING: You are about to enter a bet, once you have done this there is no way of getting your items back. However you do have the chance of winning!</p>
+                            <p>Good luck!</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <input type="submit" value="Yes please enter the bet" class="btn btn-success">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}

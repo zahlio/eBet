@@ -1,0 +1,77 @@
+{% extends "base.html" %}{% load static %}
+
+{% block title %}eBet- Steam Trade{% endblock %}
+
+
+{% block content %}
+    <ol class="breadcrumb">
+      <li><a href="/">Home</a></li>
+      <li><a href="/trade/" class="active">Trade</a></li>
+    </ol>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            Information
+        </div>
+        <div class="panel-footer">
+            <p>The following are the items we accept that is in your steam CS:GO inventory.</p>
+            <p>Please mark the items you wish to use to add funds to your account.</p>
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" >
+                Accepted items
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Accepted items</h4>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table">
+                                {% for item in acceptedItems %}
+                                    <tr>
+                                        <td><p>{{ item.market_hash_name}}</p></td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form method="POST" action="{{ trade.id }}/">
+        {% csrf_token %}
+
+        {% if inventory.total_items <= 0 %}
+            <div class="alert alert-danger" role="alert">Sadly you do not have any of our accepted items in your inventory</div>
+        {% else %}
+            <table class="table">
+                <tr>
+                    <td style="font-weight: bold;"></td>
+                    <td style="font-weight: bold;"></td>
+                    <td style="font-weight: bold;">Name</td>
+                    <td style="font-weight: bold;">Price</td>
+                </tr>
+
+                {% for item in inventory.items %}
+                    <tr>
+                        <td><input type="checkbox" name="item" value="{{ item.classid }}"></td>
+                        <td><img src="{{ item.get_image_url }}" alt="" style="width: 50px"></td>
+                        <td><p>{{ item.desc.market_hash_name }}</p></td>
+                        <td><p>${{ item.desc.get_lowest_price }}</p></td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <input type="submit" value="Go to trade overview" class="btn btn-success">
+        {% endif %}
+
+    </form>
+{% endblock %}

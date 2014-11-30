@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% load static %}
+
+{% block title %}eBet - {{ raffle.price.name }}{% endblock %}
+
+
+{% block content %}
+    <h3>Status</h3>
+    <div class="alert alert-info" role="alert">{{ msg }}</div>
+    <a href="/raffle/{{ raffle.id }}" class="btn btn-default">Back to raffle page</a>
+{% endblock %}
